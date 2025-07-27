@@ -78,7 +78,7 @@
                 }
 
                 data = await res.json();
-                lastId = data[data.length - 1];
+                lastId = data[data.length - 1].id;
                 listEntries();
             }
             catch (error) {
