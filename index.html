@@ -42,8 +42,7 @@
         let data = [];
         let lastId = 0;
 
-        await loadData();
-        listEntries();
+        loadData();
 
         const modal = document.getElementById("add-entry-modal");
         const newEntryButton = document.getElementById("add-entry-button");
@@ -67,9 +66,11 @@
 
                 const jsonData = await res.json();
                 data = JSON.parse(jsonData);
+                listEntries();
             }
             catch (error) {
                 console.log(error.message);
+                document.getElementById("entry-list").innerHTML = "Fetching entries failed";
             }
         }
 
