@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    .entry {
+        border: 2em;
+        border-color: black;
+    }
+    .entry-location {
+        font-size: 80%;
+    }
+    .entry-timestamp {
+        font-size: 80%;
+        font-style: italic;
+    }
+</style>
+</head>
+<body>
+    <h1>Unit Logbook</h1>
+
+    <h2>Entries</h2>
+    <div id="entry-list">
+        <div>Fetching entries...</div>
+    </div>
+
+    <button id="add-entry-button">New entry</button>
+
+    <dialog id="add-entry-modal" title="New entry">
+        <form method="dialog">
+            <label for="title">Title (required)</label>
+            <input id="title" type="text"/>
+            <label for="body">Body (required)</label>
+            <input id="body" type="text"/>
+            <label for="location">Location as (lat, lon) (optional)</label>
+            <input id="location" type="text"/>
+            <input id="submit-entry-button" type="submit" value="Submit"/>
+            <input id="cancel-button" type="submit" value="Cancel"/>
+        </form>
+    </dialog>
+
+    <script>
+        let data = [];
+        let lastId = 0;
+
+        await loadData();
+        listEntries();
+
+        const modal = document.getElementById("add-entry-modal");
+        const newEntryButton = document.getElementById("add-entry-button");
+        const submitButton = document.getElementById("submit-entry-button");
+        const cancelButton = document.getElementById("cancel-button");
+
+        newEntryButton.addEventListener("click", () => {
+            modal.showModal();
+        });
+
+        submitButton.addEventListener("click", () => {
+            addEntry();
+        });
+        
+        async function loadData() {
+            try {
+                const res = await fetch('./sample-data/entries.json');
+                if (!res.ok) {
+                    throw new Error(`Fetching data failed, response status: ${res.status}`);
+                }
+
+                const jsonData = await res.json();
+                data = JSON.parse(jsonData);
+            }
+            catch (error) {
+                console.log(error.message);
+            }
+        }
+
+        function listEntries() {
+            if (data.length == 0) {
+                document.getElementById("entry-list").innerHTML = "No entries";
+            }
+            else {
+                data.sort((a, b) => a.id - b.id);
+                lastId = data[0].id;
+                data.sort((a, b) => a.isoTime - b.isoTime);
+                let entry_list = "";
+                data.forEach((entry) => {
+                    entryList += `
+                        <div id="entry-${entry.id}" class="entry">
+                            <h3 class="entry-title">${entry.title}</h3>
+                            <p class="entry-body">${entry.body}</p>
+                            <p class="entry-location">Location: (${entry.lat}, ${entry.lon})</p>
+                            <p class="entry-timestamp">Timestamp: ${entry.isoTime}</p>
+                        </div>`
+                });
+                document.getElementById("entry-list").innerHTML = entryList;
+            }
+        }
+
+        function parseLocation() {
+            let location = {lat: null, lon: null};
+            const input = document.getElementById("location").value;
+            if (input.length >= 5) {
+                const parts = input.split(",");
+                if (parts.length == 2) {
+                    let lat = input[0].trim().slice(1).trim();
+                    let lon = input[1].trim().slice(0, input[1].length - 1).trim()
+                    if (lat.length > 0 && lon.length > 0) {
+                        location.lat = lat;
+                        location.lon = lon;
+                    }
+                }
+            }
+            return location;
+        }
+
+        function addEntry() {
+            const title = document.getElementById("title").value;
+            const body = document.getElementById("body").value;
+
+            if (title.length == 0 || body.length == 0) {
+                alert("Title and/or body missing, entry not submitted");
+            }
+            else {
+                const location = parseLocation();
+                const date = new Date();
+                const newEntry = {
+                    id: lastId + 1,
+                    title: title,
+                    body: body,
+                    isoTime: date.toISOString,
+                    lat: location.lat,
+                    lon: location.lon
+                }
+                data += newEntry;
+                listEntries();
+            }
+        }
+    </script>
+</body>
+</html>
