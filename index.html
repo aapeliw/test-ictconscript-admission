@@ -139,11 +139,13 @@
             else {
                 const location = parseLocation();
                 const date = new Date();
+                const timestamp = date.toISOString();
+                const id = lastId + 1;
                 const newEntry = {
-                    id: lastId + 1,
+                    id: id,
                     title: title,
                     body: body,
-                    isoTime: date.toISOString,
+                    isoTime: timestamp,
                     lat: location.lat,
                     lon: location.lon
                 };
