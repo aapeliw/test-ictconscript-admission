@@ -67,8 +67,7 @@
                     throw new Error(`Fetching data failed, response status: ${res.status}`);
                 }
 
-                const jsonData = await res.json();
-                data = JSON.parse(jsonData);
+                data = await res.json();
                 listEntries();
             }
             catch (error) {
