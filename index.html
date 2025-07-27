@@ -27,6 +27,7 @@
 
     <h2>Entries</h2>
     
+    <!-- button for opening a dialog for adding a new entry -->
     <button id="add-entry-button">New entry</button>
 
     <div id="entry-list">
@@ -34,7 +35,7 @@
     </div>
 
     
-
+    <!-- dialog for adding a new entry -->
     <dialog id="add-entry-modal" title="New entry">
         <form method="dialog">
             <label for="title">Title (required)</label>
@@ -72,13 +73,17 @@
         
         async function loadData() {
             try {
+                // try to load data
                 const res = await fetch('./sample-data/data.json');
                 if (!res.ok) {
                     throw new Error(`Fetching data failed, response status: ${res.status}`);
                 }
 
+                // process JSON data to an array of JS objects
                 data = await res.json();
+                // take the last id
                 lastId = data[data.length - 1].id;
+                // show the entries
                 listEntries();
             }
             catch (error) {
@@ -88,6 +93,7 @@
         }
 
         function listEntries() {
+            // checking if the array is empty
             if (data.length == 0) {
                 document.getElementById("entry-list").innerHTML = "No entries";
             }
@@ -113,19 +119,26 @@
         }
 
         function parseLocation() {
-            let location = {lat: null, lon: null};
+            let location = {lat: 0, lon: 0};
             const input = document.getElementById("location").value;
-            if (input.length >= 5) {
-                const parts = input.split(",");
-                if (parts.length == 2) {
-                    let lat = input[0].trim().slice(1).trim();
-                    let lon = input[1].trim().slice(0, input[1].length - 1).trim()
-                    if (lat.length > 0 && lon.length > 0) {
-                        location.lat = lat;
-                        location.lon = lon;
-                    }
+            const parts = input.split(",");
+            // there should be both lat and lon and nothing else
+            if (parts.length == 2) {
+                let lat = input[0].trim().slice(1).trim();
+                let lon = input[1].trim().slice(0, input[1].length - 2).trim()
+                if (lat.length > 0 && lon.length > 0) {
+                    location.lat = lat;
+                    location.lon = lon;
+                }
+                else {
+                    location.lat = null;
+                    location.lon = null;
                 }
             }
+            else {
+                    location.lat = null;
+                    location.lon = null;
+                }
             return location;
         }
 
@@ -151,6 +164,7 @@
                 };
                 data.push(newEntry);
                 lastId++;
+                // updating the list
                 listEntries();
                 document.getElementById("title").value = "";
                 document.getElementById("body").value = "";
