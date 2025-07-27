@@ -90,10 +90,15 @@
                     entryList += `
                         <div id="entry-${entry.id}" class="entry">
                             <h3 class="entry-title">${entry.title}</h3>
-                            <p class="entry-body">${entry.body}</p>
-                            <p class="entry-location">Location: (${entry.lat}, ${entry.lon})</p>
-                            <p class="entry-timestamp">Timestamp: ${entry.isoTime}</p>
-                        </div>`
+                            <p class="entry-body">${entry.body}</p>`;
+                    if (entry.lat != null && entry.lon != null) {
+                        entryList += `<p class="entry-location">Location: (${entry.lat}, ${entry.lon})</p>`;
+                    }
+                    else {
+                        entryList += `<p class="entry-location">Location: undefined</p>`;
+                    }
+                    entryList +=`<p class="entry-timestamp">Timestamp: ${entry.isoTime}</p>
+                        </div>`;
                 });
                 document.getElementById("entry-list").innerHTML = entryList;
             }
