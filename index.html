@@ -62,7 +62,7 @@
         
         async function loadData() {
             try {
-                const res = await fetch('./sample-data/entries.json');
+                const res = await fetch('./sample-data/data.json');
                 if (!res.ok) {
                     throw new Error(`Fetching data failed, response status: ${res.status}`);
                 }
