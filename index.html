@@ -146,8 +146,8 @@
                     isoTime: date.toISOString,
                     lat: location.lat,
                     lon: location.lon
-                }
-                data += newEntry;
+                };
+                data.push(newEntry);
                 lastId++;
                 listEntries();
                 document.getElementById("title").value = "";
