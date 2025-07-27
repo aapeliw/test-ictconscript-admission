@@ -29,12 +29,15 @@
         <form method="dialog">
             <label for="title">Title (required)</label>
             <input id="title" type="text"/>
+            <br />
             <label for="body">Body (required)</label>
             <input id="body" type="text"/>
+            <br />
             <label for="location">Location as (lat, lon) (optional)</label>
             <input id="location" type="text"/>
-            <input id="submit-entry-button" type="submit" value="Submit"/>
+            <br />
             <input id="cancel-button" type="submit" value="Cancel"/>
+            <input id="submit-entry-button" type="submit" value="Submit"/>
         </form>
     </dialog>
 
@@ -82,7 +85,7 @@
                 data.sort((a, b) => a.id - b.id);
                 lastId = data[0].id;
                 data.sort((a, b) => a.isoTime - b.isoTime);
-                let entry_list = "";
+                let entryList = "";
                 data.forEach((entry) => {
                     entryList += `
                         <div id="entry-${entry.id}" class="entry">
@@ -133,6 +136,9 @@
                 }
                 data += newEntry;
                 listEntries();
+                document.getElementById("title").value = "";
+                document.getElementById("body").value = "";
+                document.getElementById("location").value = "";
             }
         }
     </script>
